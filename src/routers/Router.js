@@ -14,6 +14,8 @@ import Signup from '../pages/Auth Pages/Signup.js';
 import LoadingPage from '../pages/Auth Pages/LoadingPage.js';
 import { Box } from '@mui/material';
 import Login from '../pages/Auth Pages/Login.js';
+import EmployeeLogin from '../pages/Auth Pages/EmployeeLogin.js';
+import AdminLogin from '../pages/Auth Pages/AdminLogin.js';
 import ChatPage from '../pages/ChatPage.js';
 import UserChatPage from '../pages/UserChatPage.js';
 import UserProfile from '../pages/User Pages/UserProfile.js';
@@ -52,10 +54,12 @@ function MyRouter() {
                         <Route path='/theme/:id' element={<ThemePage />} />
                         <Route path="*" element={<Navigate to="/dashboard" />} />
                     </Routes>) : (<Routes>
-                        <Route path='/auth/signin' element={<Login />} />
+                        <Route path='/auth/user/login' element={<Login />} />
+                        <Route path='/auth/employee/login' element={<EmployeeLogin />} />
+                        <Route path='/auth/admin/login' element={<AdminLogin />} />
                         <Route path='/auth/signup' element={<Signup />} />
                         <Route path='/auth/forget' element={<ForgotPassword />} />
-                        <Route path="*" element={<Navigate to="/auth/signin" />} />
+                        <Route path="*" element={<Navigate to="/auth/user/login" />} />
                     </Routes>)
             }
 

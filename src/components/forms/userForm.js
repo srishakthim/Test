@@ -16,6 +16,7 @@ import {
 import Axios from "../../config/axiosConfig";
 import { toast } from "react-toastify";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const UserForm = () => {
   const navigate = useNavigate();
@@ -177,6 +178,21 @@ const UserForm = () => {
         });
     }
   }, []);
+
+  const addAlert = () => {
+    Swal.fire({
+      title: "Are You Sure ?",
+      text: "Close Alert!",
+      confirmButtonText:"ok",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      showCancelButton:"cancel"
+    }).then((result) => {
+     navigate(-1);
+    
+    });
+  };
+  
   return (
     <Box>
       <Typography variant="h5">User Details</Typography>
@@ -417,7 +433,7 @@ const UserForm = () => {
       </Grid>
       <Grid item xs={12} textAlign={"end"}>
         <Button
-          onClick={() => navigate(-1)}
+          onClick={addAlert}
           variant="outlined"
           disableElevation
           sx={{

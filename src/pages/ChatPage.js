@@ -238,53 +238,68 @@ function ChatPage() {
   };
 
   const handleChange = async (event) => {
-    try {
-      setfileUploadLoading(true);
-      const file = event.target.files[0];
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("users", [localStorage.getItem("userid"), id]);
-      formData.append("sender", localStorage.getItem("userid"));
-      formData.append("timestamps", Date.now());
+    const file = event.target.files[0];
+    const image = new Image();
 
-      socket.emit("send-private-msg", {
-        sender: localStorage.getItem("userid"),
-        recipient: id,
-        filename: file.name,
-        fromSelf: true,
-        roomid: id,
-      });
-      await Axios.post("/message/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          setUploadProgress(percentCompleted);
-        },
-      })
-        .then(async (res) => {
-          const { status, message } = res.data;
-          if (status) {
-            await GetAllChatMessage();
-          } else {
-            setfileUploadLoading(false);
-            toast.error(message);
-          }
-        })
-        .catch((err) => {
-          if (err?.response) {
-            const { data } = err?.response;
-            toast.error(data.message);
-            setfileUploadLoading(false);
-          } else {
-            toast.error("Internal Server Error");
-            setfileUploadLoading(false);
-          }
-        });
-    } catch (err) {
-      setfileUploadLoading(false);
+    image.onload = () => {
+      if (image.width === 120 && image.height === 60) {
+        // Image dimensions are correct, proceed with further processing
+        alert("Image dimensions are correct");
+      } else {
+        alert('Image dimensions should be 120px X 60px');
+      }
+    };
+
+    if (file) {
+      image.src = URL.createObjectURL(file);
     }
+    // try {
+    //   setfileUploadLoading(true);
+    //   const file = event.target.files[0];
+    //   const formData = new FormData();
+    //   formData.append("file", file);
+    //   formData.append("users", [localStorage.getItem("userid"), id]);
+    //   formData.append("sender", localStorage.getItem("userid"));
+    //   formData.append("timestamps", Date.now());
+
+    //   socket.emit("send-private-msg", {
+    //     sender: localStorage.getItem("userid"),
+    //     recipient: id,
+    //     filename: file.name,
+    //     fromSelf: true,
+    //     roomid: id,
+    //   });
+    //   await Axios.post("/message/upload", formData, {
+    //     headers: { "Content-Type": "multipart/form-data" },
+    //     onUploadProgress: (progressEvent) => {
+    //       const percentCompleted = Math.round(
+    //         (progressEvent.loaded * 100) / progressEvent.total
+    //       );
+    //       setUploadProgress(percentCompleted);
+    //     },
+    //   })
+    //     .then(async (res) => {
+    //       const { status, message } = res.data;
+    //       if (status) {
+    //         await GetAllChatMessage();
+    //       } else {
+    //         setfileUploadLoading(false);
+    //         toast.error(message);
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       if (err?.response) {
+    //         const { data } = err?.response;
+    //         toast.error(data.message);
+    //         setfileUploadLoading(false);
+    //       } else {
+    //         toast.error("Internal Server Error");
+    //         setfileUploadLoading(false);
+    //       }
+    //     });
+    // } catch (err) {
+    //   setfileUploadLoading(false);
+    // }
   };
   const addMsgToHitory = (obj) => {
     sethistoryData((pre) => [...pre, obj]);
@@ -389,8 +404,36 @@ function ChatPage() {
       socket.disconnect();
     };
   }, [containerRef.current]);
+
+  //  change file
+  const [backgroundImage, setBackgroundImage] = useState(null);
+
+  const handleImageUpload = (event) => {
+    const uploadedImage = URL.createObjectURL(event.target.files[0]);
+    setBackgroundImage(uploadedImage);
+    localStorage.setItem("backgroundImage", uploadedImage);
+  };
+
+  // Check for stored background image on page load
+  useEffect(() => {
+    const storedBackgroundImage = localStorage.getItem("backgroundImage");
+    if (storedBackgroundImage) {
+      setBackgroundImage(storedBackgroundImage);
+    }
+  }, []);
+  //....
   return (
-    <Grid container>
+    <Grid container
+      sx={{
+        backgroundImage: 'url(${backgroundImage})',
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center center",
+        backgroundAttachment: "fixed", // Fix the background image
+      }}
+    >
+      {/* Image Upload */}
+      <input type="file" accept="image/*" onChange={handleImageUpload} />
       {!DownloadLoad ? (
         <Backdrop sx={{ color: "#fff", zIndex: 999 }} open={fileUploadLoading}>
           <CircularProgress variant="determinate" value={UploadProgress} />

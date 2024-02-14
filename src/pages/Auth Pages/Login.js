@@ -328,7 +328,7 @@ const Login = () => {
         email,
         password,
       };
-      Axios.post("/auth/signin", LoginData, { withCredentials: true })
+      Axios.post("/auth/user/login", LoginData, { withCredentials: true })
         .then((res) => {
           const { status, message, token } = res.data;
           if (status) {
@@ -517,8 +517,8 @@ const Login = () => {
               xs={12}
               sx={{ display: "flex", justifyContent: "space-evenly" }}
             >
-              <Button> Admin/Super Login</Button>
-              <Button> Employee login </Button>
+              <Button> <Link style={{ textDecoration: "none" }} to="/auth/admin/login">Admin Login </Link></Button>
+              <Button> <Link style={{ textDecoration: "none" }} to="/auth/employee/login">Employee Login </Link></Button>
             </Grid>
           </Box>
         </Container>
